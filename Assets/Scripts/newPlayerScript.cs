@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class newPlayerScript : MonoBehaviour {
 
@@ -29,19 +30,26 @@ public class newPlayerScript : MonoBehaviour {
         movement.z = Input.GetAxis("Vertical") * speed * Time.deltaTime;
         rotation = Input.GetAxis("Horizontal") * rotateSpeed * Time.deltaTime;
         Debug.Log(isGround);
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetMouseButtonDown(0))
         {
             GameObject Temporary_Bullet;
             Temporary_Bullet = Instantiate(bullet, firePos.position,firePos.transform.rotation) as GameObject;
             Temporary_Bullet.transform.Rotate(Vector3.left * 90);
             Rigidbody rigid = Temporary_Bullet.GetComponent<Rigidbody>();
-            rigid.AddForce(transform.forward *1000f);
-            Destroy(Temporary_Bullet, 5f);
+            rigid.AddForce(transform.forward *1500f);
+            Destroy(Temporary_Bullet, 3f);
         }
     }
     private void OnCollisionStay(Collision collision)
     {
         isGround = true;
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "enemyBullet")
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     }
     private void FixedUpdate()
     {
