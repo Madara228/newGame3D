@@ -1,30 +1,40 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
-public class turelScript : MonoBehaviour {
+using UnityEngine.SceneManagement;
+public class TurelScript : MonoBehaviour
+{
     public GameObject bullet;
     public Transform firePos;
-
-    private void Start()
+    private float fireTime = 1.5f;
+    GameObject player;
+    newPlayerScript newPlayerScript = new newPlayerScript();
+    private void OnEnable()
     {
-        StartCoroutine(findAndFire());
+        player = GameObject.FindGameObjectWithTag("Player");
+        StartCoroutine(FindAndFire());
     }
-    private IEnumerator findAndFire()
+    private IEnumerator FindAndFire()
     {
         while (true)
         {
-            yield return new WaitForSeconds(1f);
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
+            yield return new WaitForSeconds(fireTime);
             transform.LookAt(player.transform.position);
             GameObject Temporary_Bullet;
             Temporary_Bullet = Instantiate(bullet, firePos.position, firePos.transform.rotation) as GameObject;
-            Debug.Log("Instnce");
-            Debug.Log(player.transform.position);
-            Temporary_Bullet.transform.Rotate(Vector3.left * 90);
+            //Temporary_Bullet.transform.Rotate(Vector3.left * 90);
             Rigidbody rigid = Temporary_Bullet.GetComponent<Rigidbody>();
             rigid.AddForce(transform.forward * 1500f);
-            Destroy(Temporary_Bullet, 3f);
+            Destroy(Temporary_Bullet, 2f);
+        }
+    }
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "playerBullet")
+        {
+            newPlayerScript newPlayerScript = player.GetComponent<newPlayerScript>();
+            newPlayerScript.playerPoints++;
+            Debug.Log(newPlayerScript.playerPoints + "pp");
+            this.gameObject.SetActive(false);
         }
     }
 }
