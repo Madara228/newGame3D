@@ -5,26 +5,39 @@ using UnityEngine;
 public class GameControllerScript : MonoBehaviour {
 
     [SerializeField]
-    private GameObject[] turels;
-    float spawnSpeed = 4f;
+    private GameObject[] spawnPoints;
+    public GameObject enemyCapsule;
+    [SerializeField] GameObject[] gameObjects;
 
-    
-    
     private void Start()
     {
-        StartCoroutine(SpawnerEnemy()); 
+        spawnPoints = GameObject.FindGameObjectsWithTag("enemyPos");
+        spawn();
+        StartCoroutine(creator());
     }
 
-    private IEnumerator SpawnerEnemy()
+    private IEnumerator creator()
     {
         while (true)
         {
-            yield return new WaitForSeconds(spawnSpeed);
-            int a = Random.Range(0, 3);
-            if (turels[a] != null)
+            yield return new WaitForSeconds(5f);
+            gameObjects = GameObject.FindGameObjectsWithTag("turel");
+            Debug.Log(gameObjects);
+            if (gameObjects.Length <= 1)
             {
-                turels[a].SetActive(true);
+                Debug.Log("not working");
+                spawn();
             }
+        }
+    }
+
+    void spawn()
+    {
+        for (int i = 0; i < spawnPoints.Length; i++)
+        {
+            int a = Random.Range(0, 3);
+            if (a == 2)
+                Instantiate(enemyCapsule, spawnPoints[i].transform.position + new Vector3(0,1,0), transform.rotation);
         }
     }
 }

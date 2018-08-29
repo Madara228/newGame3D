@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -15,6 +13,7 @@ public class newPlayerScript : MonoBehaviour {
     public Text healthText;
     public GameObject panel;
     public int playerPoints = 0;
+    public GameObject head;
     #endregion
     #region private vars
     [SerializeField] Rigidbody rb;
@@ -23,8 +22,8 @@ public class newPlayerScript : MonoBehaviour {
     bool isGround;
     private int playerHealth = 5;
 
-    float rotSpeed = 3f;
     float yaw = 0.0f;
+    float yawY = 0.0f;
     #endregion
 
     private void Awake()
@@ -36,7 +35,8 @@ public class newPlayerScript : MonoBehaviour {
 	
 	void Update () {
         movement.z = Input.GetAxis("Vertical") * speed * Time.fixedDeltaTime;
-        yaw += Input.GetAxis("Mouse X") * rotateSpeed*Time.deltaTime;
+        yaw += Input.GetAxis("Mouse X") * rotateSpeed*Time.fixedDeltaTime;
+        yawY -= Input.GetAxis("Mouse Y") * rotateSpeed * Time.deltaTime;
         if (Input.GetMouseButtonDown(0))
         {
             GameObject Temporary_Bullet;
@@ -49,7 +49,7 @@ public class newPlayerScript : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Space) && isGround == true)
         {
          //   Debug.Log("work");
-            rb.velocity = Vector3.up * jumpspeed * Time.deltaTime;
+            rb.velocity = Vector3.up * jumpspeed * Time.fixedDeltaTime;
             isGround = false;
         }
     }
@@ -75,6 +75,7 @@ public class newPlayerScript : MonoBehaviour {
     {
         transform.Translate(movement, Space.Self);
         transform.eulerAngles = new Vector3(0.0f, yaw, 0.0f);
+        head.transform.eulerAngles = new Vector3(yawY, yaw, 0.0f);
     }
     void changeHealthText()
     {
