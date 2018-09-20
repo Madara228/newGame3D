@@ -9,6 +9,7 @@ TagManager:
   - turel
   - ground
   - enemyPos
+  - healer
   layers:
   - Default
   - TransparentFX

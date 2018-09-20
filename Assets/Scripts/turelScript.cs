@@ -6,11 +6,13 @@ public class TurelScript : MonoBehaviour
     public GameObject bullet;
     public Transform firePos;
     GameObject player;
+    GameObject healer;
      private void OnEnable()
     {
         //gameControllerObject = GameObject.Find("GameController");
        // GameControllerScript gameControllerScript = gameControllerObject.GetComponent<GameControllerScript>();
         player = GameObject.FindGameObjectWithTag("Player");
+        healer = Resources.Load("Cylinder") as GameObject;
     }
 
 
@@ -31,6 +33,16 @@ public class TurelScript : MonoBehaviour
             newPlayerScript.playerPoints++;
             Debug.Log(newPlayerScript.playerPoints + "pp");
             this.gameObject.SetActive(false);
+            int a = Random.Range(0,2);
+            if(a == 0)
+            {
+                Instantiate(healer, transform.position, Quaternion.identity);
+
+            }
+        }
+        else if(collision.gameObject.tag == "healer")
+        {
+            Destroy(this.gameObject);
         }
     }
 }

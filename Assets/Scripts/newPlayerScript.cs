@@ -13,7 +13,8 @@ public class newPlayerScript : MonoBehaviour {
     public Text healthText;
     public GameObject panel;
     public int playerPoints = 0;
-    public GameObject head;
+    //public GameObject head;
+    public GameObject camera;
     #endregion
     #region private vars
     [SerializeField] Rigidbody rb;
@@ -37,10 +38,12 @@ public class newPlayerScript : MonoBehaviour {
         movement.z = Input.GetAxis("Vertical") * speed * Time.fixedDeltaTime;
         yaw += Input.GetAxis("Mouse X") * rotateSpeed*Time.fixedDeltaTime;
         yawY -= Input.GetAxis("Mouse Y") * rotateSpeed * Time.deltaTime;
+        yawY = Mathf.Clamp(yawY, -10, 10);
+        Debug.Log(yawY);
         if (Input.GetMouseButtonDown(0))
         {
             GameObject Temporary_Bullet;
-            Temporary_Bullet = Instantiate(bullet, firePos.position,firePos.transform.rotation) as GameObject;
+            Temporary_Bullet = Instantiate(bullet, firePos.position, camera.transform.rotation) as GameObject;
             //Temporary_Bullet.transform.Rotate(Vector3.left * 90);
             Rigidbody rigid = Temporary_Bullet.GetComponent<Rigidbody>();
             rigid.AddForce(transform.forward *1500f);
@@ -70,12 +73,12 @@ public class newPlayerScript : MonoBehaviour {
                 youLose();
            }
         }
+       
     }
     private void FixedUpdate()
     {
         transform.Translate(movement, Space.Self);
         transform.eulerAngles = new Vector3(0.0f, yaw, 0.0f);
-        head.transform.eulerAngles = new Vector3(yawY, yaw, 0.0f);
     }
     void changeHealthText()
     {
@@ -92,5 +95,14 @@ public class newPlayerScript : MonoBehaviour {
     public void Restart()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+         if (other.gameObject.tag == "healer")
+        {
+            playerHealth += 1;
+            Destroy(other.gameObject);
+            changeHealthText();
+        }
     }
 }
